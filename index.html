@@ -32,11 +32,11 @@
 
 <div id="sidebar">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px;">
-        <h3>Pedido Recibido</h3>
+        <h3>Pedido Seleccionado</h3>
         <span onclick="toggleSidebar()" style="cursor:pointer; font-size:1.5rem;">✕</span>
     </div>
     <div id="lista-resumen" style="flex-grow:1; overflow-y:auto; margin-top:20px;"></div>
-    <button class="btn-add" onclick="enviarPedido()">RE-ENVIAR POR WHATSAPP 🚀</button>
+    <button class="btn-add" onclick="enviarPedido()">CONFIRMAR POR WHATSAPP 🚀</button>
 </div>
 
 <header>
@@ -57,7 +57,7 @@
 
 <script>
     const productos = [
-         { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
+        { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
         { id: 102, nombre: "cama de niña", precio: 2500, img: "./img/cama de niña.jpeg" },
         { id: 103, nombre: "llaveros", precio: 45, img: "./img/llaveros.jpeg" },
         { id: 105, nombre: "pailas de comida", precio: 170, img: "./img/pailas de comida.jpeg" },
@@ -127,21 +127,19 @@
         });
     }
 
-    // --- NUEVA FUNCIÓN PARA LEER EL ENLACE ---
     function cargarPedidoDesdeURL() {
         const urlParams = new URLSearchParams(window.location.search);
         const pedido = urlParams.get('pedido');
         if (pedido) {
             const ids = pedido.split(',');
             ids.forEach(id => agregar(parseInt(id)));
-            // Abre el carrito automáticamente para que el vendedor lo vea
             setTimeout(() => toggleSidebar(), 1000);
         }
     }
 
     function enviarPedido() {
         if(carrito.length === 0) return alert("Selecciona productos");
-        let m = "*PEDIDO CONFIRMADO*%0A%0A";
+        let m = "*NUEVO PEDIDO - DIOS ES BUENO*%0A%0A";
         let t = 0;
         carrito.forEach((p, i) => {
             m += `${i+1}. *${p.nombre.toUpperCase()}* (${formatL(p.precio)})%0A`;
@@ -149,9 +147,11 @@
         });
         m += `%0A*TOTAL: ${formatL(t)}*`;
         
-        // Genera el link para que el vendedor también lo tenga
-        const link = window.location.origin + window.location.pathname + "?pedido=" + carrito.map(p => p.id).join(',');
-        window.open(`https://wa.me/50499674298?text=${m}%0A%0AEnlace de referencia: ${link}`, '_blank');
+        // Link dinámico para que tú (vendedor) veas lo mismo
+        const base = window.location.href.split('?')[0];
+        const link = base + "?pedido=" + carrito.map(p => p.id).join(',');
+        
+        window.open(`https://wa.me/50499674298?text=${m}%0A%0AVer selección aquí: ${link}`, '_blank');
     }
 
     function filtrar() {
@@ -161,7 +161,6 @@
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-    // Efecto de escritura
     const frases = ["TODO EL TIEMPO DIOS ES BUENO", "¡AMÉN!"];
     let fI = 0, cI = 0, del = false;
     function type() {
@@ -174,12 +173,7 @@
         else { setTimeout(type, 100); }
     }
 
-    window.onload = () => { 
-        render(productos); 
-        type(); 
-        cargarPedidoDesdeURL(); // Ejecuta la lectura del enlace al cargar
-    };
+    window.onload = () => { render(productos); type(); cargarPedidoDesdeURL(); };
 </script>
 </body>
 </html>
-
