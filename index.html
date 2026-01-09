@@ -7,8 +7,6 @@
     <style>
         :root { --bg: #0e1117; --card: #1c2128; --accent: #28a745; --text: #ffffff; --blue: #00d4ff; --gray: #30363d; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-
-        /* ✨ TÍTULO CON CONTESTACIÓN INFINITA */
         .typing-container { min-height: 80px; text-align: center; margin-top: 20px; }
         #titulo-escrito { 
             font-size: 2.2rem; font-weight: 800; display: inline-block;
@@ -19,8 +17,6 @@
             animation: shine 4s linear infinite;
         }
         @keyframes shine { to { background-position: 300% center; } }
-
-        /* 🛒 CARRITO FLOTANTE */
         #cart-icon {
             position: fixed; top: 20px; right: 20px; background: var(--accent);
             width: 60px; height: 60px; border-radius: 50%; display: flex;
@@ -28,22 +24,14 @@
             cursor: pointer; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .badge { position: absolute; top: 0; right: 0; background: #ff3b30; color: white; font-size: 0.8rem; padding: 4px 8px; border-radius: 50%; border: 2px solid var(--bg); }
-
-        /* 📦 CUADRÍCULA DE PRODUCTOS */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 30px auto; }
         .producto { 
             background: var(--card); border-radius: 18px; padding: 15px; 
             border: 1px solid var(--gray); text-align: center; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .producto:hover { 
-            transform: translateY(-12px) scale(1.03); 
-            border-color: var(--blue);
-            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.25);
-        }
+        .producto:hover { transform: translateY(-12px) scale(1.03); border-color: var(--blue); box-shadow: 0 15px 35px rgba(0, 212, 255, 0.25); }
         .producto img { width: 100%; height: 210px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
-
-        /* 📱 SIDEBAR / CARRITO */
         #sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; }
         #sidebar.open { right: 0; }
         .btn-add { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
@@ -73,12 +61,88 @@
 </header>
 
 <div class="grid" id="catalogo"></div>
+
 <script>
-  // Código protegido
-  var _0x5a12=["\x4C\x69\x73\x74\x61","\x70\x72\x65\x63\x69\x6F","\x6C\x65\x6D\x70\x69\x72\x61\x73"];(function(_0x2d8f05,_0x4b3f3a){var _0x4d230b=function(_0x30f105){while(--_0x30f105){_0x2d8f05['push'](_0x2d8f05['shift']());}};_0x4d230b(++_0x4b3f3a);}(_0x5a12,0x1b3));var _0x4b23=function(_0x2d8f05,_0x4b3f3a){_0x2d8f05=_0x2d8f05-0x0;var _0x4d230b=_0x5a12[_0x2d8f05];return _0x4d230b;};
-  // ... miles de líneas similares ...
+    const productos = [
+        { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
+        { id: 102, nombre: "baldes mediano", precio: 80, img: "./img/baldes mediano.jpeg" },
+        { id: 103, nombre: "baldes mediano con agarradero", precio: 100, img: "./img/baldes mediano con agarradero.jpeg" },
+        { id: 104, nombre: "basurero", precio: 600, img: "./img/basurero.jpeg" },
+        { id: 105, nombre: "basureros estilo", precio: 220, img: "./img/basureros estilo.jpeg" },
+        { id: 106, nombre: "botes de agua", precio: 150, img: "./img/botes de agua.jpeg" },
+        { id: 107, nombre: "botes de agua estilo", precio: 150, img: "./img/botes de agua estilo.jpeg" },
+        { id: 108, nombre: "botes y basos unisec", precio: 25, img: "./img/botes y basos unisec.jpeg" },
+        { id: 109, nombre: "boxer", precio: 50, img: "./img/boxer.jpeg" }
+    ];
+
+    let carrito = [];
+    const formatLempiras = (num) => 'L. ' + num.toLocaleString('en-US', {minimumFractionDigits: 2});
+
+    const frases = ["TODO EL TIEMPO DIOS ES BUENO", "¡AMEN!"];
+    let fraseIndex = 0, charIndex = 0, isDeleting = false;
+
+    function typeWriter() {
+        const target = document.getElementById("titulo-escrito");
+        const fullText = frases[fraseIndex];
+        target.innerHTML = isDeleting ? fullText.substring(0, charIndex - 1) : fullText.substring(0, charIndex + 1);
+        charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
+        let typeSpeed = isDeleting ? 100 : 150;
+        if (!isDeleting && charIndex === fullText.length) { typeSpeed = 2000; isDeleting = true; }
+        else if (isDeleting && charIndex === 0) { isDeleting = false; fraseIndex = (fraseIndex + 1) % frases.length; typeSpeed = 500; }
+        setTimeout(typeWriter, typeSpeed);
+    }
+
+    function render(lista) {
+        const cat = document.getElementById('catalogo');
+        cat.innerHTML = "";
+        lista.forEach(p => {
+            cat.innerHTML += `
+                <div class="producto">
+                    <img src="${encodeURI(p.img)}" onerror="this.src='https://via.placeholder.com/210?text=Error+Imagen'">
+                    <div style="font-weight:bold; margin-bottom:10px;">${p.nombre.toUpperCase()}</div>
+                    <div style="color:var(--accent); font-size:1.5rem; font-weight:bold; margin-bottom:12px;">${formatLempiras(p.precio)}</div>
+                    <button class="btn-add" onclick="agregar(${p.id})">Seleccionar</button>
+                </div>`;
+        });
+    }
+
+    function agregar(id) {
+        const item = productos.find(p => p.id === id);
+        if(!carrito.some(p => p.id === id)) {
+            carrito.push(item);
+            document.getElementById('badge-count').innerText = carrito.length;
+            actualizarSidebar();
+        }
+    }
+
+    function actualizarSidebar() {
+        const res = document.getElementById('lista-resumen');
+        res.innerHTML = "";
+        carrito.forEach(p => {
+            res.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;">✅ ${p.nombre} - ${formatLempiras(p.precio)}</div>`;
+        });
+    }
+
+    function enviarPedido() {
+        if(carrito.length === 0) return alert("Selecciona productos");
+        let mensaje = "*PEDIDO - DIOS ES BUENO*%0A%0A";
+        let total = 0;
+        carrito.forEach((p, i) => {
+            mensaje += `${i+1}. *${p.nombre.toUpperCase()}* - ${formatLempiras(p.precio)}%0A`;
+            total += p.precio;
+        });
+        mensaje += `%0A*TOTAL: ${formatLempiras(total)}*`;
+        window.open(`https://wa.me/50499674298?text=${mensaje}`, '_blank');
+    }
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    function filtrar() {
+        const txt = document.getElementById('buscador').value.toLowerCase();
+        render(productos.filter(p => p.nombre.toLowerCase().includes(txt)));
+    }
+
+    window.onload = () => { typeWriter(); render(productos); };
 </script>
-
 </body>
-
 </html>
+
