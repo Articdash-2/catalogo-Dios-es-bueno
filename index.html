@@ -17,6 +17,8 @@
             animation: shine 4s linear infinite;
         }
         @keyframes shine { to { background-position: 300% center; } }
+        .search-container { text-align: center; margin-bottom: 30px; }
+        #buscador { width: 90%; max-width: 500px; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--gray); background: #f0f4f8; color: #333; outline: none; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         #cart-icon {
             position: fixed; top: 20px; right: 20px; background: var(--accent);
             width: 60px; height: 60px; border-radius: 50%; display: flex;
@@ -24,18 +26,19 @@
             cursor: pointer; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .badge { position: absolute; top: 0; right: 0; background: #ff3b30; color: white; font-size: 0.8rem; padding: 4px 8px; border-radius: 50%; border: 2px solid var(--bg); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 30px auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
         .producto { 
             background: var(--card); border-radius: 18px; padding: 15px; 
             border: 1px solid var(--gray); text-align: center; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .producto:hover { transform: translateY(-12px) scale(1.03); border-color: var(--blue); box-shadow: 0 15px 35px rgba(0, 212, 255, 0.25); }
-        .producto img { width: 100%; height: 210px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
-        #sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; }
+        .producto img { width: 100%; height: 210px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background: #222; }
+        #sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid var(--gray); }
         #sidebar.open { right: 0; }
         .btn-add { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        #buscador { width: 90%; max-width: 500px; padding: 15px; border-radius: 50px; border: 1px solid var(--gray); background: #f0f4f8; color: #333; outline: none; margin: 0 auto; display: block; }
+        .footer { text-align: center; padding: 60px 20px; margin-top: 50px; border-top: 1px solid var(--gray); color: #8b949e; }
+        .articdash-tag { color: #00d4ff; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -50,57 +53,54 @@
         <span onclick="toggleSidebar()" style="cursor:pointer; font-size:1.5rem;">✕</span>
     </div>
     <div id="lista-resumen" style="flex-grow:1; overflow-y:auto; margin-top:20px;"></div>
-    <button class="btn-add" onclick="enviarPedido()">ENVIAR SELECCIÓN 🚀</button>
+    <button class="btn-add" onclick="enviarPedido()">ENVIAR POR WHATSAPP 🚀</button>
 </div>
 
 <header>
     <div class="typing-container">
         <div id="titulo-escrito"></div>
     </div>
-    <input type="text" id="buscador" placeholder="🔍 Buscar producto..." onkeyup="filtrar()">
+    <div class="search-container">
+        <input type="text" id="buscador" placeholder="🔍 Buscar producto..." onkeyup="filtrar()">
+    </div>
 </header>
 
-<div class="grid" id="catalogo"></div>
+<main class="grid" id="catalogo"></main>
+
+<footer class="footer">
+    <p>© 2026 Catálogo Dios es Bueno 🕊️</p>
+    <p>Desarrollado por: <span class="articdash-tag">articdash-2 🚀</span></p>
+</footer>
 
 <script>
+    // Lista corregida según tus archivos reales en GitHub
     const productos = [
-        { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
-        { id: 102, nombre: "baldes mediano", precio: 80, img: "./img/baldes mediano.jpeg" },
-        { id: 103, nombre: "baldes mediano con agarradero", precio: 100, img: "./img/baldes mediano con agarradero.jpeg" },
-        { id: 104, nombre: "basurero", precio: 600, img: "./img/basurero.jpeg" },
-        { id: 105, nombre: "basureros estilo", precio: 220, img: "./img/basureros estilo.jpeg" },
-        { id: 106, nombre: "botes de agua", precio: 150, img: "./img/botes de agua.jpeg" },
-        { id: 107, nombre: "botes de agua estilo", precio: 150, img: "./img/botes de agua estilo.jpeg" },
-        { id: 108, nombre: "botes y basos unisec", precio: 25, img: "./img/botes y basos unisec.jpeg" },
-        { id: 109, nombre: "boxer", precio: 50, img: "./img/boxer.jpeg" }
+        { id: 1, nombre: "baldes mediano con agarradero", precio: 100, img: "./img/baldes mediano con agarradero.jpeg" },
+        { id: 2, nombre: "baldes mediano", precio: 80, img: "./img/baldes mediano.jpeg" },
+        { id: 3, nombre: "basurero", precio: 600, img: "./img/basurero.jpeg" },
+        { id: 4, nombre: "basureros estilo", precio: 220, img: "./img/basureros estilo.jpeg" },
+        { id: 5, nombre: "basureros", precio: 550, img: "./img/basureros.jpeg" },
+        { id: 6, nombre: "botes de agua estilo", precio: 150, img: "./img/botes de agua estilo.jpeg" },
+        { id: 7, nombre: "botes de agua", precio: 150, img: "./img/botes de agua.jpeg" },
+        { id: 8, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
+        { id: 9, nombre: "botes y basos unisec", precio: 30, img: "./img/botes y basos unisec.jpeg" },
+        { id: 10, nombre: "boxer", precio: 50, img: "./img/boxer.jpeg" }
     ];
 
     let carrito = [];
-    const formatLempiras = (num) => 'L. ' + num.toLocaleString('en-US', {minimumFractionDigits: 2});
-
-    const frases = ["TODO EL TIEMPO DIOS ES BUENO", "¡AMEN!"];
-    let fraseIndex = 0, charIndex = 0, isDeleting = false;
-
-    function typeWriter() {
-        const target = document.getElementById("titulo-escrito");
-        const fullText = frases[fraseIndex];
-        target.innerHTML = isDeleting ? fullText.substring(0, charIndex - 1) : fullText.substring(0, charIndex + 1);
-        charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
-        let typeSpeed = isDeleting ? 100 : 150;
-        if (!isDeleting && charIndex === fullText.length) { typeSpeed = 2000; isDeleting = true; }
-        else if (isDeleting && charIndex === 0) { isDeleting = false; fraseIndex = (fraseIndex + 1) % frases.length; typeSpeed = 500; }
-        setTimeout(typeWriter, typeSpeed);
-    }
+    const formatL = (n) => 'L. ' + n.toLocaleString('en-US', {minimumFractionDigits: 2});
 
     function render(lista) {
         const cat = document.getElementById('catalogo');
         cat.innerHTML = "";
         lista.forEach(p => {
+            // encodeURI ayuda a que los espacios en los nombres no rompan la imagen
+            const rutaLimpia = encodeURI(p.img);
             cat.innerHTML += `
                 <div class="producto">
-                    <img src="${encodeURI(p.img)}" onerror="this.src='https://via.placeholder.com/210?text=Error+Imagen'">
-                    <div style="font-weight:bold; margin-bottom:10px;">${p.nombre.toUpperCase()}</div>
-                    <div style="color:var(--accent); font-size:1.5rem; font-weight:bold; margin-bottom:12px;">${formatLempiras(p.precio)}</div>
+                    <img src="${rutaLimpia}" onerror="this.src='https://via.placeholder.com/210?text=Revisar+Imagen'">
+                    <div style="font-weight:bold; margin-bottom:10px; color:var(--blue);">${p.nombre.toUpperCase()}</div>
+                    <div style="color:var(--accent); font-size:1.5rem; font-weight:bold; margin-bottom:12px;">${formatL(p.precio)}</div>
                     <button class="btn-add" onclick="agregar(${p.id})">Seleccionar</button>
                 </div>`;
         });
@@ -119,30 +119,43 @@
         const res = document.getElementById('lista-resumen');
         res.innerHTML = "";
         carrito.forEach(p => {
-            res.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;">✅ ${p.nombre} - ${formatLempiras(p.precio)}</div>`;
+            res.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;">✅ ${p.nombre.toUpperCase()} - ${formatL(p.precio)}</div>`;
         });
     }
 
     function enviarPedido() {
-        if(carrito.length === 0) return alert("Selecciona productos");
-        let mensaje = "*PEDIDO - DIOS ES BUENO*%0A%0A";
-        let total = 0;
+        if(carrito.length === 0) return alert("Selecciona algo primero");
+        let m = "*NUEVO PEDIDO*%0A%0A";
+        let t = 0;
         carrito.forEach((p, i) => {
-            mensaje += `${i+1}. *${p.nombre.toUpperCase()}* - ${formatLempiras(p.precio)}%0A`;
-            total += p.precio;
+            m += `${i+1}. *${p.nombre.toUpperCase()}* (${formatL(p.precio)})%0A`;
+            t += p.precio;
         });
-        mensaje += `%0A*TOTAL: ${formatLempiras(total)}*`;
-        window.open(`https://wa.me/50499674298?text=${mensaje}`, '_blank');
+        m += `%0A*TOTAL: ${formatL(t)}*`;
+        window.open(`https://wa.me/50499674298?text=${m}`, '_blank');
     }
 
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function filtrar() {
         const txt = document.getElementById('buscador').value.toLowerCase();
         render(productos.filter(p => p.nombre.toLowerCase().includes(txt)));
     }
 
-    window.onload = () => { typeWriter(); render(productos); };
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+    // Efecto de escritura
+    const frases = ["TODO EL TIEMPO DIOS ES BUENO", "¡AMÉN!"];
+    let fI = 0, cI = 0, del = false;
+    function type() {
+        const t = document.getElementById("titulo-escrito");
+        const txt = frases[fI];
+        t.innerHTML = del ? txt.substring(0, cI - 1) : txt.substring(0, cI + 1);
+        cI = del ? cI - 1 : cI + 1;
+        if (!del && cI === txt.length) { del = true; setTimeout(type, 2000); }
+        else if (del && cI === 0) { del = false; fI = (fI + 1) % frases.length; setTimeout(type, 500); }
+        else { setTimeout(type, 100); }
+    }
+
+    window.onload = () => { render(productos); type(); };
 </script>
 </body>
 </html>
-
