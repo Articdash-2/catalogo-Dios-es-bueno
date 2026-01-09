@@ -15,12 +15,12 @@
         #cart-icon { position: fixed; top: 20px; right: 20px; background: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         .badge { position: absolute; top: 0; right: 0; background: #ff3b30; color: white; font-size: 0.8rem; padding: 4px 8px; border-radius: 50%; border: 2px solid var(--bg); }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .producto { background: var(--card); border-radius: 18px; padding: 15px; border: 1px solid var(--gray); text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .producto:hover { transform: translateY(-12px) scale(1.03); border-color: var(--blue); box-shadow: 0 15px 35px rgba(0, 212, 255, 0.25); }
+        .producto { background: var(--card); border-radius: 18px; padding: 15px; border: 1px solid var(--gray); text-align: center; transition: 0.4s; }
         .producto img { width: 100%; height: 210px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background: #222; }
         #sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid var(--gray); }
         #sidebar.open { right: 0; }
         .btn-add { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .btn-reset { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; display: none; }
         .footer { text-align: center; padding: 60px 20px; margin-top: 50px; border-top: 1px solid var(--gray); color: #8b949e; }
     </style>
 </head>
@@ -32,7 +32,7 @@
 
 <div id="sidebar">
     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px;">
-        <h3>Pedido Seleccionado</h3>
+        <h3>Pedido Recibido</h3>
         <span onclick="toggleSidebar()" style="cursor:pointer; font-size:1.5rem;">✕</span>
     </div>
     <div id="lista-resumen" style="flex-grow:1; overflow-y:auto; margin-top:20px;"></div>
@@ -44,6 +44,8 @@
         <div id="titulo-escrito"></div>
     </div>
     <div class="search-container">
+        <button id="btn-ver-todo" class="btn-reset" onclick="window.location.href=window.location.pathname">Ver Catálogo Completo 👁️</button>
+        <br>
         <input type="text" id="buscador" placeholder="🔍 Buscar producto..." onkeyup="filtrar()">
     </div>
 </header>
@@ -57,13 +59,14 @@
 
 <script>
     const productos = [
-   { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
+        { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
         { id: 102, nombre: "cama de niña", precio: 2500, img: "./img/cama de niña.jpeg" },
         { id: 103, nombre: "llaveros", precio: 45, img: "./img/llaveros.jpeg" },
         { id: 105, nombre: "pailas de comida", precio: 170, img: "./img/pailas de comida.jpeg" },
-{ id: 106, nombre: "silla peresosa", precio: 650, img: "./img/silla peresosa.jpeg" },
+        { id: 106, nombre: "silla peresosa", precio: 650, img: "./img/silla peresosa.jpeg" },
+        { id: 107, nombre: "cucharas y trinches", precio: 110, img: "./img/cucharas y trinches.jpeg" },
         { id: 108, nombre: "sandalias de niña", precio: 180, img: "./img/sandalias de niña.jpeg" },
-        { id: 111, nombre: "basureros estilo", precio: 220, img: "./img/basureros estilo.jpeg" },
+        { id: 111, nombre: "basureros + estilos", precio: 220, img: "./img/basureros estilo.jpeg" },
         { id: 112, nombre: "basureros", precio: 600, img: "./img/basurero.jpeg" },
         { id: 113, nombre: "botes de agua estilos", precio: 150, img: "./img/botes de agua estilo.jpeg" },
         { id: 114, nombre: "bote de agua", precio: 150, img: "./img/botes de agua.jpeg" },
@@ -99,12 +102,15 @@
         const cat = document.getElementById('catalogo');
         cat.innerHTML = "";
         lista.forEach(p => {
+            const estaEnCarrito = carrito.some(c => c.id === p.id);
             cat.innerHTML += `
-                <div class="producto">
-                    <img src="${encodeURI(p.img)}" onerror="this.src='https://via.placeholder.com/210?text=Revisar+Imagen'">
+                <div class="producto" style="border-color: ${estaEnCarrito ? 'var(--accent)' : 'var(--gray)'}">
+                    <img src="${encodeURI(p.img)}" onerror="this.src='https://via.placeholder.com/210?text=Error+Imagen'">
                     <div style="font-weight:bold; margin-bottom:10px; color:var(--blue);">${p.nombre.toUpperCase()}</div>
                     <div style="color:var(--accent); font-size:1.5rem; font-weight:bold; margin-bottom:12px;">${formatL(p.precio)}</div>
-                    <button class="btn-add" onclick="agregar(${p.id})">Seleccionar</button>
+                    <button class="btn-add" onclick="agregar(${p.id})" style="background:${estaEnCarrito ? '#555' : 'var(--accent)'}">
+                        ${estaEnCarrito ? 'Seleccionado ✅' : 'Seleccionar'}
+                    </button>
                 </div>`;
         });
     }
@@ -115,6 +121,8 @@
             carrito.push(item);
             document.getElementById('badge-count').innerText = carrito.length;
             actualizarSidebar();
+            // Refrescar vista actual para mostrar el check
+            filtrar(); 
         }
     }
 
@@ -129,11 +137,39 @@
     function cargarPedidoDesdeURL() {
         const urlParams = new URLSearchParams(window.location.search);
         const pedido = urlParams.get('pedido');
+        
         if (pedido) {
-            const ids = pedido.split(',');
-            ids.forEach(id => agregar(parseInt(id)));
+            const ids = pedido.split(',').map(id => parseInt(id));
+            // 1. Llenar el carrito
+            ids.forEach(id => agregar(id));
+            
+            // 2. MOSTRAR SOLO LOS PRODUCTOS DEL PEDIDO EN LA WEB
+            const productosFiltrados = productos.filter(p => ids.includes(p.id));
+            render(productosFiltrados);
+            
+            // 3. Mostrar botón para volver al catálogo completo
+            document.getElementById('btn-ver-todo').style.display = 'inline-block';
+            document.getElementById('buscador').placeholder = "🔍 Buscando en este pedido...";
+            
+            // 4. Abrir carrito automáticamente
             setTimeout(() => toggleSidebar(), 1000);
+        } else {
+            render(productos);
         }
+    }
+
+    function filtrar() {
+        const txt = document.getElementById('buscador').value.toLowerCase();
+        const urlParams = new URLSearchParams(window.location.search);
+        const pedido = urlParams.get('pedido');
+        
+        let baseParaFiltrar = productos;
+        if(pedido) {
+            const ids = pedido.split(',').map(id => parseInt(id));
+            baseParaFiltrar = productos.filter(p => ids.includes(p.id));
+        }
+
+        render(baseParaFiltrar.filter(p => p.nombre.toLowerCase().includes(txt)));
     }
 
     function enviarPedido() {
@@ -145,17 +181,8 @@
             t += p.precio;
         });
         m += `%0A*TOTAL: ${formatL(t)}*`;
-        
-        // Link dinámico para que tú (vendedor) veas lo mismo
-        const base = window.location.href.split('?')[0];
-        const link = base + "?pedido=" + carrito.map(p => p.id).join(',');
-        
-        window.open(`https://wa.me/50499674298?text=${m}%0A%0AVer selección aquí: ${link}`, '_blank');
-    }
-
-    function filtrar() {
-        const txt = document.getElementById('buscador').value.toLowerCase();
-        render(productos.filter(p => p.nombre.toLowerCase().includes(txt)));
+        const link = window.location.origin + window.location.pathname + "?pedido=" + carrito.map(p => p.id).join(',');
+        window.open(`https://wa.me/50499674298?text=${m}%0A%0AEnlace de referencia: ${link}`, '_blank');
     }
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -172,10 +199,7 @@
         else { setTimeout(type, 100); }
     }
 
-    window.onload = () => { render(productos); type(); cargarPedidoDesdeURL(); };
+    window.onload = () => { type(); cargarPedidoDesdeURL(); };
 </script>
 </body>
 </html>
-
-
-
