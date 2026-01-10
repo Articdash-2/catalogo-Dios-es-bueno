@@ -240,7 +240,7 @@
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function enviarPedido() {
         if(carrito.length === 0) return alert("Selecciona productos");
-        let m = "*PEDIDO - FIEL ES DIOS*%0A%0A";
+        let m = "*PEDIDO - MUCHAS GRACIAS POR TU COMPRA *%0A%0A";
         let t = 0;
         carrito.forEach((p, i) => { m += `${i+1}. *${p.nombre.toUpperCase()}* (L. ${p.precio})%0A`; t += p.precio; });
         m += `%0A*TOTAL: L. ${t}*`;
@@ -260,6 +260,7 @@
 </script>
 </body>
 </html>
+
 
 
 
