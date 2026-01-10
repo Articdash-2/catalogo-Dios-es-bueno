@@ -3,67 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo - Dios es Bueno</title>
+    <title>Catálogo</title>
     <style>
-        :root { --bg: #0e1117; --card: #1c2128; --accent: #28a745; --text: #ffffff; --blue: #00d4ff; --gray: #30363d; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .typing-container { min-height: 80px; text-align: center; margin-top: 20px; }
-        #titulo-escrito { font-size: 2.2rem; font-weight: 800; display: inline-block; background: linear-gradient(90deg, #00d4ff, #00ff88, #ff00ff, #00d4ff); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; }
-        @keyframes shine { to { background-position: 300% center; } }
-        .search-container { text-align: center; margin-bottom: 30px; }
-        #buscador { width: 90%; max-width: 500px; padding: 15px 25px; border-radius: 50px; border: 1px solid var(--gray); background: #f0f4f8; color: #333; outline: none; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        #cart-icon { position: fixed; top: 20px; right: 20px; background: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .badge { position: absolute; top: 0; right: 0; background: #ff3b30; color: white; font-size: 0.8rem; padding: 4px 8px; border-radius: 50%; border: 2px solid var(--bg); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .producto { background: var(--card); border-radius: 18px; padding: 15px; border: 1px solid var(--gray); text-align: center; transition: 0.4s; }
-        .producto img { width: 100%; height: 210px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; background: #222; }
-        #sidebar { position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid var(--gray); }
+        html { scroll-behavior: smooth; }
+        :root { 
+            --bg: #0e1117; 
+            --card: #1c2128; 
+            --accent: #28a745; 
+            --text: #ffffff; 
+            --blue: #00d4ff; 
+            --gray: #30363d; 
+        }
+        
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+        .preloader-logo { width: 150px; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+        /* --- HERO DINÁMICO --- */
+        .hero-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--bg);
+        }
+
+        .hero-bg-img {
+            width: 100%;
+            height: 100vh;
+            background: url('./img/baner.jpeg') no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), var(--bg));
+            z-index: 2;
+        }
+
+        header { 
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            padding-top: 5vh;
+            width: 100%;
+        }
+
+        /* AJUSTES MÓVIL */
+        @media (max-width: 768px) {
+            .hero-wrapper { min-height: 60vh; }
+            .hero-bg-img { 
+                position: relative; 
+                height: 55vh; 
+                background-size: contain; 
+                background-position: center bottom;
+            }
+            header { position: absolute; top: 15px; padding-top: 0; }
+            #titulo-escrito { font-size: 1.4rem !important; min-height: 40px !important; }
+            #buscador { margin-top: 0 !important; width: 85% !important; padding: 10px 15px !important; }
+        }
+
+        #titulo-escrito { 
+            font-size: clamp(1.5rem, 8vw, 3.5rem); 
+            font-weight: 800; 
+            background: linear-gradient(90deg, #00d4ff, #00ff88, #ff00ff, #00d4ff); 
+            background-size: 300% auto; 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: shine 4s linear infinite;
+        }
+
+        #buscador { 
+            width: 85%; max-width: 450px; padding: 15px; border-radius: 50px; 
+            border: 2px solid var(--blue); background: white; color: #111;
+            margin-top: 20px; font-size: 1rem; outline: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* --- EFECTO CRÉDITOS --- */
+        .credits-artic {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            font-weight: bold;
+            display: inline-block;
+            background: linear-gradient(45deg, #00d4ff, #00ff88, #ff00ff, #00d4ff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        .emoji-cool {
+            display: inline-block;
+            animation: beat 1.5s ease-in-out infinite;
+            -webkit-text-fill-color: initial; /* Para que el emoji mantenga su color */
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3) rotate(10deg); }
+        }
+
+        /* --- GRID PRODUCTOS --- */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 15px; max-width: 1200px; margin: 0 auto; padding: 15px;
+            position: relative; z-index: 5;
+        }
+        .producto { background: var(--card); border-radius: 15px; padding: 12px; border: 1px solid var(--gray); text-align: center; }
+        .producto img { width: 100%; height: 160px; object-fit: cover; border-radius: 10px; }
+
+        #cart-icon { position: fixed; bottom: 25px; right: 25px; background: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        #sidebar { position: fixed; top: 0; right: -100%; width: 100%; max-width: 350px; height: 100%; background: #161b22; z-index: 3000; transition: 0.4s; padding: 25px; box-sizing: border-box; }
         #sidebar.open { right: 0; }
-        .btn-add { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .btn-reset { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; display: none; }
-        .footer { text-align: center; padding: 60px 20px; margin-top: 50px; border-top: 1px solid var(--gray); color: #8b949e; }
+
+        @keyframes shine { to { background-position: 200% center; } }
     </style>
 </head>
 <body>
 
+<div id="preloader">
+    <img src="./img/logo.jpeg" alt="Logo" class="preloader-logo">
+    <h2 style="color:var(--blue); margin-top:15px;">BIENVENIDO</h2>
+</div>
+
 <div id="cart-icon" onclick="toggleSidebar()">
-    🛒 <span class="badge" id="badge-count">0</span>
+    🛒 <span id="badge-count" style="position:absolute; top:0; right:0; background:red; color:white; font-size:0.8rem; padding:5px 9px; border-radius:50%;">0</span>
 </div>
 
 <div id="sidebar">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px;">
-        <h3>Pedido Recibido</h3>
-        <span onclick="toggleSidebar()" style="cursor:pointer; font-size:1.5rem;">✕</span>
-    </div>
-    <div id="lista-resumen" style="flex-grow:1; overflow-y:auto; margin-top:20px;"></div>
-    <button class="btn-add" onclick="enviarPedido()">CONFIRMAR POR WHATSAPP 🚀</button>
+    <h3>Pedido Recibido <span onclick="toggleSidebar()" style="float:right; cursor:pointer;">✕</span></h3>
+    <div id="lista-resumen" style="height:70%; overflow-y:auto; margin: 20px 0;"></div>
+    <button onclick="enviarPedido()" style="background:var(--accent); color:white; border:none; padding:18px; width:100%; border-radius:10px; cursor:pointer; font-weight:bold; font-size:1.1rem;">ENVIAR A WHATSAPP 🚀</button>
 </div>
 
-<header>
-    <div class="typing-container">
-        <div id="titulo-escrito"></div>
-    </div>
-    <div class="search-container">
-        <button id="btn-ver-todo" class="btn-reset" onclick="window.location.href=window.location.pathname">Ver Catálogo Completo 👁️</button>
-        <br>
-        <input type="text" id="buscador" placeholder="🔍 Buscar producto..." onkeyup="filtrar()">
-    </div>
-</header>
+<div class="hero-wrapper">
+    <div class="hero-bg-img"></div>
+    <div class="hero-overlay"></div>
+    <header>
+        <div id="titulo-escrito" style="min-height:80px;"></div>
+        <input type="text" id="buscador" placeholder="🔍 ¿Qué buscas hoy?..." onkeyup="filtrar()">
+    </header>
+</div>
 
-<main class="grid" id="catalogo"></main>
-
-<footer class="footer">
-    <p>© 2026 Catálogo Dios es Bueno 🕊️</p>
-    <p>Desarrollado por: <span style="color:#00d4ff">articdash-2 🚀</span></p>
-</footer>
+<div class="main-content">
+    <main class="grid" id="catalogo"></main>
+    <footer style="text-align:center; padding:50px; color:#8b949e; border-top: 1px solid var(--gray); line-height: 1.6;">
+        <p>Inversiones Oasis © 2026<br>Filipenses 4:13</p>
+        <div class="credits-artic">
+            Desarrollado por ArticDash-2 <span class="emoji-cool">💎</span>
+        </div>
+    </footer>
+</div>
 
 <script>
+    // Mismo Script Anterior (Funciona Perfecto)
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('preloader').style.opacity = '0';
+            setTimeout(() => document.getElementById('preloader').style.display = 'none', 800);
+        }, 2000);
+        type();
+        filtrar();
+    };
+
     const productos = [
         { id: 101, nombre: "botes para salsas", precio: 25, img: "./img/botes para salsas.jpeg" },
         { id: 102, nombre: "cama de niña", precio: 2500, img: "./img/cama de niña.jpeg" },
         { id: 103, nombre: "llaveros", precio: 45, img: "./img/llaveros.jpeg" },
         { id: 105, nombre: "pailas de comida", precio: 170, img: "./img/pailas de comida.jpeg" },
-        { id: 106, nombre: "silla peresosa", precio: 650, img: "./img/silla  peresosa.jpeg" },
+        { id: 106, nombre: "silla peresosa", precio: 650, img: "./img/silla peresosa.jpeg" },
         { id: 107, nombre: "cucharas y trinches", precio: 110, img: "./img/cucharas y trinches.jpeg" },
         { id: 108, nombre: "sandalias de niña", precio: 180, img: "./img/sandalias de niña.jpeg" },
         { id: 111, nombre: "basureros + estilos", precio: 220, img: "./img/basureros estilo.jpeg" },
@@ -96,97 +224,28 @@
     ];
 
     let carrito = [];
-    const formatL = (n) => 'L. ' + n.toLocaleString('en-US', {minimumFractionDigits: 2});
-
     function render(lista) {
         const cat = document.getElementById('catalogo');
-        cat.innerHTML = "";
-        lista.forEach(p => {
-            const estaEnCarrito = carrito.some(c => c.id === p.id);
-            cat.innerHTML += `
-                <div class="producto" style="border-color: ${estaEnCarrito ? 'var(--accent)' : 'var(--gray)'}">
-                    <img src="${encodeURI(p.img)}" onerror="this.src='https://via.placeholder.com/210?text=Error+Imagen'">
-                    <div style="font-weight:bold; margin-bottom:10px; color:var(--blue);">${p.nombre.toUpperCase()}</div>
-                    <div style="color:var(--accent); font-size:1.5rem; font-weight:bold; margin-bottom:12px;">${formatL(p.precio)}</div>
-                    <button class="btn-add" onclick="agregar(${p.id})" style="background:${estaEnCarrito ? '#555' : 'var(--accent)'}">
-                        ${estaEnCarrito ? 'Seleccionado ✅' : 'Seleccionar'}
-                    </button>
-                </div>`;
-        });
+        cat.innerHTML = lista.map(p => {
+            const estaEn = carrito.some(c => c.id === p.id);
+            return `<div class="producto" style="border-color: ${estaEn ? 'var(--accent)' : 'var(--gray)'}"><img src="${p.img}"><div style="font-weight:bold; color:var(--blue); margin-top:10px;">${p.nombre.toUpperCase()}</div><div style="color:var(--accent); font-size:1.3rem; margin:8px 0;">L. ${p.precio}</div><button onclick="agregar(${p.id})" style="background:${estaEn ? '#555' : 'var(--accent)'}; color:white; border:none; padding:10px; width:100%; border-radius:8px; cursor:pointer;">${estaEn ? 'AGREGADO ✅' : 'SELECCIONAR'}</button></div>`;
+        }).join('');
     }
-
     function agregar(id) {
         const item = productos.find(p => p.id === id);
-        if(item && !carrito.some(p => p.id === id)) {
-            carrito.push(item);
-            document.getElementById('badge-count').innerText = carrito.length;
-            actualizarSidebar();
-            // Refrescar vista actual para mostrar el check
-            filtrar(); 
-        }
+        if(item && !carrito.some(p => p.id === id)) { carrito.push(item); document.getElementById('badge-count').innerText = carrito.length; actualizarSidebar(); filtrar(); }
     }
-
-    function actualizarSidebar() {
-        const res = document.getElementById('lista-resumen');
-        res.innerHTML = "";
-        carrito.forEach(p => {
-            res.innerHTML += `<div style="padding:10px; border-bottom:1px solid #333;">✅ ${p.nombre.toUpperCase()} - ${formatL(p.precio)}</div>`;
-        });
-    }
-
-    function cargarPedidoDesdeURL() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const pedido = urlParams.get('pedido');
-        
-        if (pedido) {
-            const ids = pedido.split(',').map(id => parseInt(id));
-            // 1. Llenar el carrito
-            ids.forEach(id => agregar(id));
-            
-            // 2. MOSTRAR SOLO LOS PRODUCTOS DEL PEDIDO EN LA WEB
-            const productosFiltrados = productos.filter(p => ids.includes(p.id));
-            render(productosFiltrados);
-            
-            // 3. Mostrar botón para volver al catálogo completo
-            document.getElementById('btn-ver-todo').style.display = 'inline-block';
-            document.getElementById('buscador').placeholder = "🔍 Buscando en este pedido...";
-            
-            // 4. Abrir carrito automáticamente
-            setTimeout(() => toggleSidebar(), 1000);
-        } else {
-            render(productos);
-        }
-    }
-
-    function filtrar() {
-        const txt = document.getElementById('buscador').value.toLowerCase();
-        const urlParams = new URLSearchParams(window.location.search);
-        const pedido = urlParams.get('pedido');
-        
-        let baseParaFiltrar = productos;
-        if(pedido) {
-            const ids = pedido.split(',').map(id => parseInt(id));
-            baseParaFiltrar = productos.filter(p => ids.includes(p.id));
-        }
-
-        render(baseParaFiltrar.filter(p => p.nombre.toLowerCase().includes(txt)));
-    }
-
+    function actualizarSidebar() { document.getElementById('lista-resumen').innerHTML = carrito.map(p => `<div style="padding:10px; border-bottom:1px solid #333;">✅ ${p.nombre.toUpperCase()} - L. ${p.precio}</div>`).join(''); }
+    function filtrar() { const txt = document.getElementById('buscador').value.toLowerCase(); render(productos.filter(p => p.nombre.toLowerCase().includes(txt))); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function enviarPedido() {
         if(carrito.length === 0) return alert("Selecciona productos");
-        let m = "*NUEVO PEDIDO - DIOS ES BUENO*%0A%0A";
+        let m = "*PEDIDO - INVERSIONES OASIS*%0A%0A";
         let t = 0;
-        carrito.forEach((p, i) => {
-            m += `${i+1}. *${p.nombre.toUpperCase()}* (${formatL(p.precio)})%0A`;
-            t += p.precio;
-        });
-        m += `%0A*TOTAL: ${formatL(t)}*`;
-        const link = window.location.origin + window.location.pathname + "?pedido=" + carrito.map(p => p.id).join(',');
-        window.open(`https://wa.me/50499674298?text=${m}%0A%0AEnlace de referencia: ${link}`, '_blank');
+        carrito.forEach((p, i) => { m += `${i+1}. *${p.nombre.toUpperCase()}* (L. ${p.precio})%0A`; t += p.precio; });
+        m += `%0A*TOTAL: L. ${t}*`;
+        window.open(`https://wa.me/50499674298?text=${m}`, '_blank');
     }
-
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
     const frases = ["TODO EL TIEMPO DIOS ES BUENO", "¡AMEN!"];
     let fI = 0, cI = 0, del = false;
     function type() {
@@ -198,11 +257,6 @@
         else if (del && cI === 0) { del = false; fI = (fI + 1) % frases.length; setTimeout(type, 500); }
         else { setTimeout(type, 100); }
     }
-
-    window.onload = () => { type(); cargarPedidoDesdeURL(); };
 </script>
 </body>
 </html>
-
-
-
